@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AdminAuth {
+  id           Int      @id
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Todo {
+  id        Int          @id @default(autoincrement())
+  title     String
+  content   String       @default("")
+  priority  TodoPriority @default(NORMAL)
+  date      DateTime     @default(now())
+  categoryId Int?
+  category   Category?   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  completed Boolean      @default(false)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([categoryId, date])
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  todos     Todo[]
+}
+
+enum TodoPriority {
+  NORMAL
+  URGENT
+  IMPORTANT
+  URGENT_IMPORTANT
+}
