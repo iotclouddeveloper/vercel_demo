@@ -1,32 +1,26 @@
-# 拾光-日程管理工具
+# 拾光 · 前端演示版
 
-Next.js App Router + Auth.js Credentials + Prisma(SQLite) dashboard MVP.
+Next.js 静态日历应用，无数据库、登录或服务端 API。
 
-## First run
+- 日历查看、日常/工作/学习分类切换
+- 新增、编辑、删除事项，拖动复制事项
+- 数据保存在当前浏览器 localStorage，不跨设备同步；清除浏览器数据会删除记录
 
-1. Install dependencies:
-   - `npm install`
-2. Prepare environment variables:
-   - Copy `.env.example` to `.env`
-   - Set `AUTH_SECRET` and `ADMIN_PASSWORD`
-3. Initialize database and admin password hash:
-   - `npm run db:push`
-   - `npm run db:seed`
-4. Start app:
-   - `npm run dev`
+## 本地开发
 
-## Verification checklist
-
-- Open `http://localhost:3000` and confirm redirect to `/login`.
-- Login with any username and your `ADMIN_PASSWORD`.
-- Add/toggle/delete todos and refresh page, data should persist.
-
-建议一起迁移
-web/prisma/dev.db
-web/.env（特别是 AUTH_SECRET，不一致会导致登录会话问题）
-项目代码本身
-新电脑建议步骤
-放好 dev.db 到相同相对路径（通常 web/prisma/dev.db）
+```sh
 npm install
-npm run db:push（对齐结构，不清数据）
-npm run de
+npm run dev
+```
+
+## Vercel 部署
+
+推送代码至 GitHub，然后在 Vercel 导入项目。Framework Preset 选择 Next.js，Build Command 使用 `npm run build`，Output Directory 使用 `out`（如未自动识别则手动填写）。不需要 DATABASE_URL、AUTH_SECRET 或任何环境变量。
+
+```sh
+npm run build
+```
+
+构建生成 `out/` 静态站点。`/login` 保留为同样的演示页面，旧书签仍可访问。
+
+原 SQLite 数据不会导入前端演示版。

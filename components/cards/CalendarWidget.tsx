@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState, useTransition, type DragEvent } from "react";
-import { useRouter } from "next/navigation";
-import type { TodoPriority } from "@prisma/client";
+
+import type { TodoPriority } from "@/lib/calendar-actions";
 import Holidays from "date-holidays";
 import {
   copyCalendarTodoToDate,
@@ -201,7 +201,7 @@ export function CalendarWidget({ todos, selectedCategoryId }: CalendarWidgetProp
   const [isPending, startTransition] = useTransition();
   const [formError, setFormError] = useState("");
   const [editError, setEditError] = useState("");
-  const router = useRouter();
+
   const holidays = useMemo(() => {
     const hd = new Holidays("CN");
     hd.setLanguages("zh");
@@ -242,7 +242,7 @@ export function CalendarWidget({ todos, selectedCategoryId }: CalendarWidgetProp
       const result = await createCalendarTodo({}, formData);
       if (!result?.error) {
         closeModal();
-        router.refresh();
+        window.dispatchEvent(new Event("calendar-change"));
       } else {
         setFormError(result.error);
       }
@@ -254,7 +254,7 @@ export function CalendarWidget({ todos, selectedCategoryId }: CalendarWidgetProp
       const result = await updateCalendarTodo({}, formData);
       if (!result?.error) {
         closeEditModal();
-        router.refresh();
+        window.dispatchEvent(new Event("calendar-change"));
       } else {
         setEditError(result.error);
       }
@@ -272,7 +272,7 @@ export function CalendarWidget({ todos, selectedCategoryId }: CalendarWidgetProp
       const result = await deleteCalendarTodo({}, formData);
       if (!result?.error) {
         closeEditModal();
-        router.refresh();
+        window.dispatchEvent(new Event("calendar-change"));
       } else {
         setEditError(result.error);
         setDeletingTodoId(null);
@@ -306,7 +306,7 @@ export function CalendarWidget({ todos, selectedCategoryId }: CalendarWidgetProp
         setCopyError(result.error);
       } else {
         setCopyError("");
-        router.refresh();
+        window.dispatchEvent(new Event("calendar-change"));
       }
     });
   }
